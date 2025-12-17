@@ -58,7 +58,7 @@ public class Resource {
         this.location = location;
         this.createdAt = createdAt;
     }
-   public Resource{
+   public Resource(){
 
    }
 }
