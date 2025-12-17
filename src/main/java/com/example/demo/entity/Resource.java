@@ -47,6 +47,6 @@ public class Resource {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-   
+    public 
    
 }
