@@ -47,6 +47,16 @@ public class Resource {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    public 
-   
+    public Resource(Long id, String resourceName, String resourceType, int capacity, String location,
+            LocalDateTime createdAt) {
+        this.id = id;
+        this.resourceName = resourceName;
+        this.resourceType = resourceType;
+        this.capacity = capacity;
+        this.location = location;
+        this.createdAt = createdAt;
+    }
+   public Resource{
+    
+   }
 }
