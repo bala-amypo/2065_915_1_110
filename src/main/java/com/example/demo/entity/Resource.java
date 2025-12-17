@@ -2,8 +2,10 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+@Entity
 public class Resource {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String resourceName;
     private String resourceType;
@@ -57,6 +59,6 @@ public class Resource {
         this.createdAt = createdAt;
     }
    public Resource{
-    
+
    }
 }
