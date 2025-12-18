@@ -1,5 +1,17 @@
 package com.example.demo.repository;
 
-public class ResourceRequestRepository {
-    
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.entity.ResourceRequest;
+
+@Repository
+public interface ResourceRequestRepository extends JpaRepository<ResourceRequest, Long> {
+
+    List<ResourceRequest> findByRequestedBy_Id(Long userId);
+
+    List<ResourceRequest> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 }
