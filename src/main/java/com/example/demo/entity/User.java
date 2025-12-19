@@ -9,6 +9,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fullName;
+
+    @Email(message = "Invalid email format")
+    @Column(unique = true, nullable = false)
     private Stringe email;
     private String role;
     private LocalDateTime createdAt;
