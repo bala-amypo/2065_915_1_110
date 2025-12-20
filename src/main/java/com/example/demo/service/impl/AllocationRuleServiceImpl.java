@@ -3,47 +3,32 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.AllocationRule;
 import com.example.demo.repository.AllocationRuleRepository;
 import com.example.demo.service.AllocationRuleService;
-
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service   // 🔥 THIS IS THE MOST IMPORTANT LINE
 public class AllocationRuleServiceImpl implements AllocationRuleService {
 
-    private final AllocationRuleRepository repository;
+    private final AllocationRuleRepository ruleRepo;
 
-    public AllocationRuleServiceImpl(AllocationRuleRepository repository) {
-        this.repository = repository;
+    public AllocationRuleServiceImpl(AllocationRuleRepository ruleRepo) {
+        this.ruleRepo = ruleRepo;
     }
 
     @Override
     public AllocationRule createRule(AllocationRule rule) {
-        return repository.save(rule);
+        if (ruleRepo.existsByRuleName(rule.getRuleName())) {
+            throw new IllegalArgumentException("Rule already exists");
+        }
+        return ruleRepo.save(rule);
     }
 
     @Override
-    public List<AllocationRule> getAllRules() {
-        return repository.findAll();
-    }
-
-    @Override
-    public AllocationRule getRuleById(Long id) {
-        return repository.findById(id)
+    public AllocationRule getRule(Long id) {
+        return ruleRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Rule not found"));
     }
 
     @Override
-    public AllocationRule updateRule(Long id, AllocationRule rule) {
-        AllocationRule existing = getRuleById(id);
-        existing.setRuleName(rule.getRuleName());
-        existing.setRuleType(rule.getRuleType());
-        existing.setPriorityWeight(rule.getPriorityWeight());
-        return repository.save(existing);
-    }
-
-    @Override
-    public void deleteRule(Long id) {
-        repository.deleteById(id);
+    public List<AllocationRule> getAllRules() {
+        return ruleRepo.findAll();
     }
 }
