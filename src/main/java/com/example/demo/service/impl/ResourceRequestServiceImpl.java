@@ -5,6 +5,8 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.ResourceRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ResourceRequestService;
+import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 @Service
