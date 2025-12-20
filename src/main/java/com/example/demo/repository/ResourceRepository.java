@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
 
-    boolean existsByResourceName(String resourceName);
+    boolean existsByResourceName(String name);
 
-    List<Resource> findByResourceType(String resourceType);
+    List<Resource> findByResourceType(String type);
 }
