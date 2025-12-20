@@ -1,10 +1,5 @@
 package com.example.demo.security;
 
-public class CustomUserDetailsService {
-    
-}
-  package com.example.demo.security;
-
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
