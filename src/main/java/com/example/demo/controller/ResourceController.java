@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Resource;
 import com.example.demo.service.ResourceService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class ResourceController {
     }
 
     @GetMapping("/{id}")
-    public Resource get(@PathVariable Long id) {
+    public Resource getById(@PathVariable Long id) {
         return resourceService.getResource(id);
     }
 }

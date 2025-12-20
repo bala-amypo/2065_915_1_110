@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ResourceRequest;
 import com.example.demo.service.ResourceRequestService;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +17,8 @@ public class ResourceRequestController {
     }
 
     @PostMapping("/{userId}")
-    public ResourceRequest create(
-            @PathVariable Long userId,
-            @RequestBody ResourceRequest request) {
-
+    public ResourceRequest create(@PathVariable Long userId,
+                                  @RequestBody ResourceRequest request) {
         return requestService.createRequest(userId, request);
     }
 
@@ -36,10 +33,8 @@ public class ResourceRequestController {
     }
 
     @PutMapping("/status/{requestId}")
-    public ResourceRequest updateStatus(
-            @PathVariable Long requestId,
-            @RequestParam String status) {
-
+    public ResourceRequest updateStatus(@PathVariable Long requestId,
+                                        @RequestParam String status) {
         return requestService.updateRequestStatus(requestId, status);
     }
 }
