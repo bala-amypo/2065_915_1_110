@@ -7,27 +7,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rules")
+@RequestMapping("/api/allocation-rules")
 public class AllocationRuleController {
 
-    private final AllocationRuleService ruleService;
+    private final AllocationRuleService allocationRuleService;
 
-    public AllocationRuleController(AllocationRuleService ruleService) {
-        this.ruleService = ruleService;
+    public AllocationRuleController(AllocationRuleService allocationRuleService) {
+        this.allocationRuleService = allocationRuleService;
     }
 
     @PostMapping
     public AllocationRule create(@RequestBody AllocationRule rule) {
-        return ruleService.createRule(rule);
+        return allocationRuleService.createRule(rule);
+    }
+
+    @GetMapping("/{id}")
+    public AllocationRule getById(@PathVariable Long id) {
+        return allocationRuleService.getRule(id);
     }
 
     @GetMapping
     public List<AllocationRule> getAll() {
-        return ruleService.getAllRules();
-    }
-
-    @GetMapping("/{id}")
-    public AllocationRule get(@PathVariable Long id) {
-        return ruleService.getRule(id);
+        return allocationRuleService.getAllRules();
     }
 }
