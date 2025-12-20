@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.AllocationRule;
-import com.example.demo.dto.ApiResponse;
 import com.example.demo.service.AllocationRuleService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -13,24 +13,22 @@ public class AllocationRuleController {
 
     private final AllocationRuleService ruleService;
 
-    @Autowired
-    public AllocationRuleController(AllocationRuleService ruleService){
+    public AllocationRuleController(AllocationRuleService ruleService) {
         this.ruleService = ruleService;
     }
 
     @PostMapping
-    public ApiResponse createRule(@RequestBody AllocationRule rule){
-        AllocationRule created = ruleService.createRule(rule);
-        return new ApiResponse(true, "Rule created successfully", created);
+    public AllocationRule create(@RequestBody AllocationRule rule) {
+        return ruleService.createRule(rule);
     }
 
     @GetMapping
-    public List<AllocationRule> getAllRules(){
+    public List<AllocationRule> getAll() {
         return ruleService.getAllRules();
     }
 
     @GetMapping("/{id}")
-    public AllocationRule getRule(@PathVariable Long id){
+    public AllocationRule get(@PathVariable Long id) {
         return ruleService.getRule(id);
     }
 }

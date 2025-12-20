@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Resource;
-import com.example.demo.dto.ApiResponse;
 import com.example.demo.service.ResourceService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -13,24 +13,22 @@ public class ResourceController {
 
     private final ResourceService resourceService;
 
-    @Autowired
-    public ResourceController(ResourceService resourceService){
+    public ResourceController(ResourceService resourceService) {
         this.resourceService = resourceService;
     }
 
     @PostMapping
-    public ApiResponse createResource(@RequestBody Resource resource){
-        Resource created = resourceService.createResource(resource);
-        return new ApiResponse(true, "Resource created successfully", created);
+    public Resource create(@RequestBody Resource resource) {
+        return resourceService.createResource(resource);
     }
 
     @GetMapping
-    public List<Resource> getAllResources(){
+    public List<Resource> getAll() {
         return resourceService.getAllResources();
     }
 
     @GetMapping("/{id}")
-    public Resource getResource(@PathVariable Long id){
+    public Resource get(@PathVariable Long id) {
         return resourceService.getResource(id);
     }
 }
