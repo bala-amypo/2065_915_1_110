@@ -7,7 +7,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ResourceRequestService;
 
 import java.util.List;
-
+@Service
 public class ResourceRequestServiceImpl implements ResourceRequestService {
 
     private final ResourceRequestRepository requestRepository;
