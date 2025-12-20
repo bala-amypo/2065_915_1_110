@@ -32,3 +32,4 @@ public class AllocationRuleServiceImpl implements AllocationRuleService {
         return ruleRepo.findAll();
     }
 }
+  
