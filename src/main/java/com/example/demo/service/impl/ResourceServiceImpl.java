@@ -3,37 +3,38 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.Resource;
 import com.example.demo.repository.ResourceRepository;
 import com.example.demo.service.ResourceService;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
+@Service
 public class ResourceServiceImpl implements ResourceService {
 
-    private final ResourceRepository resourceRepo;
+    private final ResourceRepository resourceRepository;
 
     public ResourceServiceImpl(ResourceRepository resourceRepository) {
-        this.resourceRepo = resourceRepository;
+        this.resourceRepository = resourceRepository;
     }
 
     @Override
     public Resource createResource(Resource resource) {
-        if (resource.getResourceType() == null || resource.getCapacity() == null || resource.getCapacity() < 1) {
-            throw new IllegalArgumentException("Invalid resource data");
+        if (resourceRepository.existsByResourceName(resource.getResourceName())) {
+            throw new RuntimeException("Resource already exists");
         }
-
-        if (resourceRepo.existsByResourceName(resource.getResourceName())) {
-            throw new IllegalArgumentException("Resource already exists");
+        if (resource.getCapacity() == null || resource.getCapacity() < 1) {
+            throw new RuntimeException("Capacity must be at least 1");
         }
-
-        return resourceRepo.save(resource);
+        return resourceRepository.save(resource);
     }
 
     @Override
     public Resource getResource(Long id) {
-        return resourceRepo.findById(id)
+        return resourceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found"));
     }
 
     @Override
     public List<Resource> getAllResources() {
-        return resourceRepo.findAll();
+        return resourceRepository.findAll();
     }
 }
