@@ -1,32 +1,38 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.example.demo.entity.Resource;
 import com.example.demo.service.ResourceService;
+import com.example.demo.dto.ApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/resources")
+@RequestMapping("/api/resources")
 public class ResourceController {
 
+    private final ResourceService resourceService;
+
     @Autowired
-    private ResourceService resourceService;
+    public ResourceController(ResourceService resourceService) {
+        this.resourceService = resourceService;
+    }
 
     @PostMapping
-    public Resource createResource(@RequestBody Resource resource) {
-        return resourceService.saveResource(resource);
+    public ResponseEntity<Resource> createResource(@Valid @RequestBody Resource resource) {
+        Resource saved = resourceService.createResource(resource);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping
-    public List<Resource> getAllResources() {
-        return resourceService.getAllResources();
+    public ResponseEntity<List<Resource>> getAllResources() {
+        return ResponseEntity.ok(resourceService.getAllResources());
     }
 
     @GetMapping("/{id}")
-    public Resource getResource(@PathVariable Long id) {
-        return resourceService.getResourceById(id);
+    public ResponseEntity<Resource> getResource(@PathVariable Long id) {
+        return ResponseEntity.ok(resourceService.getResource(id));
     }
 }

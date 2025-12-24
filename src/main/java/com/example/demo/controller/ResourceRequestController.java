@@ -1,32 +1,42 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.example.demo.entity.ResourceRequest;
 import com.example.demo.service.ResourceRequestService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/resource-requests")
+@RequestMapping("/api/requests")
 public class ResourceRequestController {
 
-    @Autowired
-    private ResourceRequestService requestService;
+    private final ResourceRequestService requestService;
 
-    @PostMapping
-    public ResourceRequest createRequest(@RequestBody ResourceRequest request) {
-        return requestService.saveRequest(request);
+    @Autowired
+    public ResourceRequestController(ResourceRequestService requestService) {
+        this.requestService = requestService;
     }
 
-    @GetMapping
-    public List<ResourceRequest> getAllRequests() {
-        return requestService.getAllRequests();
+    @PostMapping("/{userId}")
+    public ResponseEntity<ResourceRequest> createRequest(@PathVariable Long userId, @Valid @RequestBody ResourceRequest request) {
+        ResourceRequest created = requestService.createRequest(userId, request);
+        return ResponseEntity.ok(created);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ResourceRequest>> getRequestsByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(requestService.getRequestsByUser(userId));
     }
 
     @GetMapping("/{id}")
-    public ResourceRequest getRequest(@PathVariable Long id) {
-        return requestService.getRequestById(id);
+    public ResponseEntity<ResourceRequest> getRequest(@PathVariable Long id) {
+        return ResponseEntity.ok(requestService.getRequest(id));
+    }
+
+    @PutMapping("/status/{requestId}")
+    public ResponseEntity<ResourceRequest> updateRequestStatus(@PathVariable Long requestId, @RequestParam String status) {
+        return ResponseEntity.ok(requestService.updateRequestStatus(requestId, status));
     }
 }
