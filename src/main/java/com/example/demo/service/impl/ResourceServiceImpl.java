@@ -1,9 +1,10 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.Resource;
-import com.example.demo.exception.ValidationException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ResourceRepository;
 import com.example.demo.service.ResourceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,25 +12,22 @@ import java.util.List;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
-    private final ResourceRepository resourceRepo;
-
-    public ResourceServiceImpl(ResourceRepository resourceRepo) {
-        this.resourceRepo = resourceRepo;
-    }
+    @Autowired
+    private ResourceRepository resourceRepository;
 
     @Override
-    public Resource createResource(Resource resource) {
-        if (resource.getResourceName() == null || resource.getResourceType() == null || resource.getCapacity() <= 0) {
-            throw new ValidationException("Invalid resource details");
-        }
-        if (resourceRepo.existsByResourceName(resource.getResourceName())) {
-            throw new ValidationException("Resource with this name already exists");
-        }
-        return resourceRepo.save(resource);
+    public Resource getResource(Long id) {
+        return resourceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found with id: " + id));
     }
 
     @Override
     public List<Resource> getAllResources() {
-        return resourceRepo.findAll();
+        return resourceRepository.findAll();
+    }
+
+    @Override
+    public Resource createResource(Resource resource) {
+        return resourceRepository.save(resource);
     }
 }

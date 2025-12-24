@@ -4,7 +4,7 @@ import com.example.demo.entity.Resource;
 import java.util.List;
 
 public interface ResourceService {
-    Resource createResource(Resource resource);
+    Resource getResource(Long id);   // must match Impl
     List<Resource> getAllResources();
-    Resource getResource(Long id); // required method
+    Resource createResource(Resource resource);
 }
