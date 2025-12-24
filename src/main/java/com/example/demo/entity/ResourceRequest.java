@@ -1,49 +1,47 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
+@Table(name = "resource_requests")
 public class ResourceRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-
-    @NotBlank(message = "Resource type is required")
-    private String resourceType;
-
-    private String purpose;
-
-    private String status = "PENDING";
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @NotNull
+    private User user;
 
     @ManyToOne
-    private User requestedBy;
+    @JoinColumn(name = "resource_id")
+    @NotNull
+    private Resource resource;
+
+    @NotNull
+    private Date requestDate;
 
     public ResourceRequest() {}
+
+    public ResourceRequest(User user, Resource resource, Date requestDate) {
+        this.user = user;
+        this.resource = resource;
+        this.requestDate = requestDate;
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public LocalDateTime getEndTime() { return endTime; }
-    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
+    public Resource getResource() { return resource; }
+    public void setResource(Resource resource) { this.resource = resource; }
 
-    public String getResourceType() { return resourceType; }
-    public void setResourceType(String resourceType) { this.resourceType = resourceType; }
-
-    public String getPurpose() { return purpose; }
-    public void setPurpose(String purpose) { this.purpose = purpose; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public User getRequestedBy() { return requestedBy; }
-    public void setRequestedBy(User requestedBy) { this.requestedBy = requestedBy; }
+    public Date getRequestDate() { return requestDate; }
+    public void setRequestDate(Date requestDate) { this.requestDate = requestDate; }
 }

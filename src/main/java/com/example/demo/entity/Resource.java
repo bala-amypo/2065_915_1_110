@@ -1,10 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Table(name = "resources")
 public class Resource {
 
     @Id
@@ -12,26 +12,23 @@ public class Resource {
     private Long id;
 
     @NotBlank(message = "Resource name is required")
-    @Column(unique = true)
-    private String resourceName;
+    private String name;
 
-    @NotBlank(message = "Resource type is required")
-    private String resourceType;
-
-    @Min(value = 1, message = "Capacity must be at least 1")
-    private int capacity;
+    private String type;
 
     public Resource() {}
+
+    public Resource(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getResourceName() { return resourceName; }
-    public void setResourceName(String resourceName) { this.resourceName = resourceName; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getResourceType() { return resourceType; }
-    public void setResourceType(String resourceType) { this.resourceType = resourceType; }
-
-    public int getCapacity() { return capacity; }
-    public void setCapacity(int capacity) { this.capacity = capacity; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 }
