@@ -1,25 +1,25 @@
 package com.example.demo.dto;
 
-public class ApiResponse {
+public class ApiResponse<T> {
 
-    private boolean success;
+    private String status;
     private String message;
-    private Object data;
+    private T data;
 
     public ApiResponse() {}
 
-    public ApiResponse(boolean success, String message, Object data) {
-        this.success = success;
+    public ApiResponse(String status, String message, T data) {
+        this.status = status;
         this.message = message;
         this.data = data;
     }
 
-    public boolean isSuccess() { return success; }
-    public void setSuccess(boolean success) { this.success = success; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
-    public Object getData() { return data; }
-    public void setData(Object data) { this.data = data; }
+    public T getData() { return data; }
+    public void setData(T data) { this.data = data; }
 }
