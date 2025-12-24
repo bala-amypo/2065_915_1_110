@@ -1,32 +1,61 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.Resource;
 import com.example.demo.entity.ResourceAllocation;
+import com.example.demo.entity.ResourceRequest;
 import com.example.demo.repository.ResourceAllocationRepository;
+import com.example.demo.repository.ResourceRepository;
+import com.example.demo.repository.ResourceRequestRepository;
 import com.example.demo.service.ResourceAllocationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ResourceAllocationServiceImpl implements ResourceAllocationService {
 
-    @Autowired
-    private ResourceAllocationRepository resourceAllocationRepository;
+    private final ResourceRequestRepository requestRepository;
+    private final ResourceRepository resourceRepository;
+    private final ResourceAllocationRepository allocationRepository;
 
-    @Override
-    public ResourceAllocation createAllocation(ResourceAllocation allocation) {
-        return resourceAllocationRepository.save(allocation);
+    public ResourceAllocationServiceImpl(ResourceRequestRepository requestRepository,
+                                         ResourceRepository resourceRepository,
+                                         ResourceAllocationRepository allocationRepository) {
+        this.requestRepository = requestRepository;
+        this.resourceRepository = resourceRepository;
+        this.allocationRepository = allocationRepository;
     }
 
     @Override
-    public ResourceAllocation getAllocationById(Long id) {
-        return resourceAllocationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Allocation not found"));
+    public ResourceAllocation autoAllocate(Long requestId) {
+        ResourceRequest request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+
+        List<Resource> candidates = resourceRepository.findByResourceType(request.getResourceType());
+        if (candidates.isEmpty()) {
+            throw new IllegalArgumentException("No resources available for type: " + request.getResourceType());
+        }
+
+        Resource selected = candidates.get(0); // simple first-available allocation
+
+        ResourceAllocation allocation = new ResourceAllocation();
+        allocation.setResource(selected);
+        allocation.setRequest(request);
+        allocation.setConflictFlag(false);
+        allocation.setAllocatedAt(LocalDateTime.now());
+        allocation.setNotes("Auto-allocated");
+        return allocationRepository.save(allocation);
+    }
+
+    @Override
+    public ResourceAllocation getAllocation(Long id) {
+        return allocationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Allocation not found"));
     }
 
     @Override
     public List<ResourceAllocation> getAllAllocations() {
-        return resourceAllocationRepository.findAll();
+        return allocationRepository.findAll();
     }
 }

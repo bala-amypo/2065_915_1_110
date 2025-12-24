@@ -4,10 +4,7 @@ import com.example.demo.entity.ResourceAllocation;
 import java.util.List;
 
 public interface ResourceAllocationService {
-
-    ResourceAllocation createAllocation(ResourceAllocation allocation);
-
-    ResourceAllocation getAllocationById(Long id);
-
+    ResourceAllocation autoAllocate(Long requestId);
+    ResourceAllocation getAllocation(Long id);
     List<ResourceAllocation> getAllAllocations();
 }
