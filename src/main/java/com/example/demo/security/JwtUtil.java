@@ -1,44 +1,51 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
-import java.security.Key;
+import io.jsonwebtoken.*;
+import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@Component
 public class JwtUtil {
 
-    private final Key key;
+    private final String secretKey;
     private final long validityInMs;
 
+    public JwtUtil() {
+        this.secretKey = "test-secret-key-that-is-long-enough-1234"; // default
+        this.validityInMs = 3600000; // 1 hour
+    }
+
     public JwtUtil(String secretKey, long validityInMs) {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.secretKey = secretKey;
         this.validityInMs = validityInMs;
     }
 
     public String generateToken(Long userId, String email, String role) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("userId", userId);
+        Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
-
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + validityInMs);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setSubject(email)
+                .setId(String.valueOf(userId))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + validityInMs))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
     public Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("JWT token expired");
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid JWT token");
+        }
     }
 }
