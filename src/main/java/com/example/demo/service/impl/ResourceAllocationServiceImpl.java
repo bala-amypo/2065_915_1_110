@@ -8,9 +8,11 @@ import com.example.demo.repository.ResourceAllocationRepository;
 import com.example.demo.repository.ResourceRepository;
 import com.example.demo.repository.ResourceRequestRepository;
 import com.example.demo.service.ResourceAllocationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ResourceAllocationServiceImpl implements ResourceAllocationService {
 
     private final ResourceRequestRepository reqRepo;
@@ -27,28 +29,15 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService 
 
     @Override
     public ResourceAllocation autoAllocate(Long requestId) {
-
-        ResourceRequest req = reqRepo.findById(requestId)
-                .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
-
+        ResourceRequest req = reqRepo.findById(requestId).orElseThrow(() -> new ResourceNotFoundException("Request not found"));
         List<Resource> resources = resourceRepo.findByResourceType(req.getResourceType());
-
         if (resources.isEmpty()) {
-            throw new IllegalArgumentException("No resource available");
+            throw new ResourceNotFoundException("No available resources");
         }
-
         ResourceAllocation allocation = new ResourceAllocation();
         allocation.setRequest(req);
         allocation.setResource(resources.get(0));
-        allocation.setConflictFlag(false);
-
         return allocRepo.save(allocation);
-    }
-
-    @Override
-    public ResourceAllocation getAllocation(Long id) {
-        return allocRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Allocation not found"));
     }
 
     @Override
