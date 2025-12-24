@@ -1,38 +1,58 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.AllocationRule;
+import com.example.demo.entity.Resource;
+import com.example.demo.entity.ResourceAllocation;
+import com.example.demo.entity.ResourceRequest;
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.AllocationRuleRepository;
-import com.example.demo.service.AllocationRuleService;
+import com.example.demo.repository.ResourceAllocationRepository;
+import com.example.demo.repository.ResourceRepository;
+import com.example.demo.repository.ResourceRequestRepository;
+import com.example.demo.service.ResourceAllocationService;
 
 import java.util.List;
 
-public class AllocationRuleServiceImpl implements AllocationRuleService {
+public class ResourceAllocationServiceImpl implements ResourceAllocationService {
 
-    private final AllocationRuleRepository ruleRepo;
+    private final ResourceRequestRepository reqRepo;
+    private final ResourceRepository resourceRepo;
+    private final ResourceAllocationRepository allocRepo;
 
-    public AllocationRuleServiceImpl(AllocationRuleRepository ruleRepo) {
-        this.ruleRepo = ruleRepo;
+    public ResourceAllocationServiceImpl(ResourceRequestRepository reqRepo,
+                                         ResourceRepository resourceRepo,
+                                         ResourceAllocationRepository allocRepo) {
+        this.reqRepo = reqRepo;
+        this.resourceRepo = resourceRepo;
+        this.allocRepo = allocRepo;
     }
 
     @Override
-    public AllocationRule createRule(AllocationRule rule) {
+    public ResourceAllocation autoAllocate(Long requestId) {
 
-        if (ruleRepo.existsByRuleName(rule.getRuleName())) {
-            throw new IllegalArgumentException("Rule already exists");
+        ResourceRequest req = reqRepo.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+
+        List<Resource> resources = resourceRepo.findByResourceType(req.getResourceType());
+
+        if (resources.isEmpty()) {
+            throw new IllegalArgumentException("No resource available");
         }
 
-        return ruleRepo.save(rule);
+        ResourceAllocation allocation = new ResourceAllocation();
+        allocation.setRequest(req);
+        allocation.setResource(resources.get(0));
+        allocation.setConflictFlag(false);
+
+        return allocRepo.save(allocation);
     }
 
     @Override
-    public AllocationRule getRule(Long id) {
-        return ruleRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
+    public ResourceAllocation getAllocation(Long id) {
+        return allocRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Allocation not found"));
     }
 
     @Override
-    public List<AllocationRule> getAllRules() {
-        return ruleRepo.findAll();
+    public List<ResourceAllocation> getAllAllocations() {
+        return allocRepo.findAll();
     }
 }
