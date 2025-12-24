@@ -1,10 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Resource;
 import java.util.List;
+import com.example.demo.entity.Resource;
 
 public interface ResourceService {
-    Resource getResource(Long id);   // must match Impl
+
+    Resource saveResource(Resource resource);
+
+    Resource getResource(Long id);
+
     List<Resource> getAllResources();
-    Resource createResource(Resource resource);
 }
