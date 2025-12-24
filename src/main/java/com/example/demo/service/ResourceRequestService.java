@@ -1,13 +1,13 @@
 package com.example.demo.service;
 
-import java.util.List;
 import com.example.demo.entity.ResourceRequest;
+import java.util.List;
 
 public interface ResourceRequestService {
 
-    ResourceRequest saveRequest(ResourceRequest request);
+    Resource createRequest(ResourceRequest request);
 
-    ResourceRequest getRequest(Long id);
+    ResourceRequest getRequestById(Long id);
 
     List<ResourceRequest> getAllRequests();
 }
