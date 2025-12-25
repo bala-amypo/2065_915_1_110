@@ -10,28 +10,25 @@ import java.util.List;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
-    private final ResourceRepository resourceRepository;
+    private final ResourceRepository resourceRepo;
 
-    public ResourceServiceImpl(ResourceRepository resourceRepository) {
-        this.resourceRepository = resourceRepository;
+    public ResourceServiceImpl(ResourceRepository resourceRepo) {
+        this.resourceRepo = resourceRepo;
     }
 
     @Override
     public Resource createResource(Resource resource) {
-        if (resource.getResourceName() == null || resource.getResourceName().isEmpty()) {
-            throw new RuntimeException("Resource name is required");
+        if (resource.getResourceName() == null || resource.getResourceType() == null || resource.getCapacity() == null) {
+            throw new RuntimeException("Invalid Resource");
         }
-        if (resource.getResourceType() == null || resource.getResourceType().isEmpty()) {
-            throw new RuntimeException("Resource type is required");
+        if (resourceRepo.existsByResourceName(resource.getResourceName())) {
+            throw new RuntimeException("Resource already exists");
         }
-        if (resource.getCapacity() == null || resource.getCapacity() <= 0) {
-            throw new RuntimeException("Resource capacity must be positive");
-        }
-        return resourceRepository.save(resource);
+        return resourceRepo.save(resource);
     }
 
     @Override
     public List<Resource> getAllResources() {
-        return resourceRepository.findAll();
+        return resourceRepo.findAll();
     }
 }
