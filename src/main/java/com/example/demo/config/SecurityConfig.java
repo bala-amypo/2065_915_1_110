@@ -1,3 +1,8 @@
-package com.example.demo.config; 
-public class SecurityConfig { 
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
