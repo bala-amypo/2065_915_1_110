@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class ResourceRequest {
@@ -10,63 +11,35 @@ public class ResourceRequest {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "requested_by")
     private User requestedBy;
 
-    @ManyToOne
-    private Resource resource;
+    private String resourceType;
+    private String purpose;
+    private String status = "PENDING"; // default
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
-    private int quantity;
+    public ResourceRequest() {}
 
-    private String status;
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public ResourceRequest() {
-    }
+    public User getRequestedBy() { return requestedBy; }
+    public void setRequestedBy(User requestedBy) { this.requestedBy = requestedBy; }
 
-    public ResourceRequest(User requestedBy, Resource resource, int quantity, String status) {
-        this.requestedBy = requestedBy;
-        this.resource = resource;
-        this.quantity = quantity;
-        this.status = status;
-    }
+    public String getResourceType() { return resourceType; }
+    public void setResourceType(String resourceType) { this.resourceType = resourceType; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getPurpose() { return purpose; }
+    public void setPurpose(String purpose) { this.purpose = purpose; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public User getRequestedBy() {
-        return requestedBy;
-    }
+    public LocalDateTime getStartTime() { return startTime; }
+    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
 
-    public void setRequestedBy(User requestedBy) {
-        this.requestedBy = requestedBy;
-    }
-
-    public Resource getResource() {
-        return resource;
-    }
-
-    public void setResource(Resource resource) {
-        this.resource = resource;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public LocalDateTime getEndTime() { return endTime; }
+    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
 }
