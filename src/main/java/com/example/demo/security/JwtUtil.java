@@ -1,52 +1,64 @@
 package com.example.demo.security;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.*;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-import java.io.IOException;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtUtil {
 
-    private final JwtUtil jwtUtil;
-    private final CustomUserDetailsService userDetailsService;
+    private final Key key;
+    private final long jwtExpirationInMs;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, CustomUserDetailsService userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
+    public JwtUtil(String secret, long jwtExpirationInMs) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.jwtExpirationInMs = jwtExpirationInMs;
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    // Generate token with userId, email, and role
+    public String generateToken(Long userId, String email, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        claims.put("userId", userId);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
 
-        String authHeader = request.getHeader("Authorization");
+    // Parse claims from token
+    public Claims parseClaims(String token) throws JwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            try {
-                var claims = jwtUtil.parseClaims(token);
-                String email = claims.getSubject();
+    // Extract username (email) from token
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
+    }
 
-                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    var userDetails = userDetailsService.loadUserByUsername(email);
-                    var authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities()
-                    );
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            } catch (Exception ex) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                return;
-            }
-        }
-        filterChain.doFilter(request, response);
+    // Validate token against UserDetails
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    // Check if token is expired
+    public boolean isTokenExpired(String token) {
+        Date exp = parseClaims(token).getExpiration();
+        return exp.before(new Date());
     }
 }
