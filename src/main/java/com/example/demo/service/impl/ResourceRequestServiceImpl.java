@@ -1,14 +1,14 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
 import com.example.demo.entity.ResourceRequest;
 import com.example.demo.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ResourceRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ResourceRequestService;
-
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ResourceRequestServiceImpl implements ResourceRequestService {
@@ -24,8 +24,9 @@ public class ResourceRequestServiceImpl implements ResourceRequestService {
 
     @Override
     public ResourceRequest createRequest(Long userId, ResourceRequest request) {
+
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         request.setRequestedBy(user);
         request.setStatus("PENDING");
@@ -40,8 +41,9 @@ public class ResourceRequestServiceImpl implements ResourceRequestService {
 
     @Override
     public ResourceRequest updateRequestStatus(Long requestId, String status) {
+
         ResourceRequest req = reqRepo.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
 
         req.setStatus(status);
         return reqRepo.save(req);

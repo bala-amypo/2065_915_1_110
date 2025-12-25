@@ -1,12 +1,13 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
 import com.example.demo.entity.AllocationRule;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.AllocationRuleRepository;
 import com.example.demo.service.AllocationRuleService;
-
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AllocationRuleServiceImpl implements AllocationRuleService {
@@ -19,16 +20,18 @@ public class AllocationRuleServiceImpl implements AllocationRuleService {
 
     @Override
     public AllocationRule createRule(AllocationRule rule) {
+
         if (ruleRepo.existsByRuleName(rule.getRuleName())) {
-            throw new RuntimeException("Rule already exists");
+            throw new ValidationException("Rule already exists");
         }
+
         return ruleRepo.save(rule);
     }
 
     @Override
     public AllocationRule getRule(Long id) {
         return ruleRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rule not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
     }
 
     @Override

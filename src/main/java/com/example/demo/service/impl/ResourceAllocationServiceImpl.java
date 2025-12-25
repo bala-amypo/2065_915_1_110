@@ -1,16 +1,16 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
 import com.example.demo.entity.Resource;
 import com.example.demo.entity.ResourceAllocation;
 import com.example.demo.entity.ResourceRequest;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.ResourceAllocationRepository;
 import com.example.demo.repository.ResourceRepository;
 import com.example.demo.repository.ResourceRequestRepository;
 import com.example.demo.service.ResourceAllocationService;
-
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ResourceAllocationServiceImpl implements ResourceAllocationService {
@@ -29,21 +29,21 @@ public class ResourceAllocationServiceImpl implements ResourceAllocationService 
 
     @Override
     public ResourceAllocation autoAllocate(Long requestId) {
-        ResourceRequest req = reqRepo.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
 
-        List<Resource> resources =
-                resourceRepo.findByResourceType(req.getResourceType());
+        ResourceRequest req = reqRepo.findById(requestId)
+                .orElseThrow(() -> new ValidationException("Request not found"));
+
+        List<Resource> resources = resourceRepo.findByResourceType(req.getResourceType());
 
         if (resources.isEmpty()) {
-            throw new RuntimeException("No resource available");
+            throw new ValidationException("No resource available");
         }
 
-        ResourceAllocation alloc = new ResourceAllocation();
-        alloc.setRequest(req);
-        alloc.setResource(resources.get(0));
+        ResourceAllocation allocation = new ResourceAllocation();
+        allocation.setRequest(req);
+        allocation.setResource(resources.get(0));
 
-        return allocRepo.save(alloc);
+        return allocRepo.save(allocation);
     }
 
     @Override

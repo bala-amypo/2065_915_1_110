@@ -1,20 +1,23 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserRepository userRepo;
 
-    @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.registerUser(user);
+    public UserController(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
     }
 }
