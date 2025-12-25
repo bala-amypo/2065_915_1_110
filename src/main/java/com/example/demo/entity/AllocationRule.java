@@ -10,49 +10,21 @@ public class AllocationRule {
     private Long id;
 
     private String ruleName;
+    private String ruleType; // e.g., FIRST_AVAILABLE, PRIORITY
+    private Integer priorityWeight;
 
-    private int priority;
+    public AllocationRule() {}
 
-    private boolean active;
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public AllocationRule() {
-    }
+    public String getRuleName() { return ruleName; }
+    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
 
-    public AllocationRule(String ruleName, int priority, boolean active) {
-        this.ruleName = ruleName;
-        this.priority = priority;
-        this.active = active;
-    }
+    public String getRuleType() { return ruleType; }
+    public void setRuleType(String ruleType) { this.ruleType = ruleType; }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRuleName() {
-        return ruleName;
-    }
-
-    public void setRuleName(String ruleName) {
-        this.ruleName = ruleName;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    public Integer getPriorityWeight() { return priorityWeight; }
+    public void setPriorityWeight(Integer priorityWeight) { this.priorityWeight = priorityWeight; }
 }
