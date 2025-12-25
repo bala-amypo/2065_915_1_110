@@ -1,9 +1,16 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "resource_allocations")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResourceAllocation {
 
     @Id
@@ -11,29 +18,14 @@ public class ResourceAllocation {
     private Long id;
 
     @ManyToOne
-    private Resource resource;
-
-    @ManyToOne
+    @JoinColumn(name = "request_id")
     private ResourceRequest request;
 
-    private String notes;
+    @ManyToOne
+    @JoinColumn(name = "resource_id")
+    private Resource resource;
+
     private LocalDateTime allocatedAt = LocalDateTime.now();
 
-    public ResourceAllocation() {}
-
-    // Getters & Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Resource getResource() { return resource; }
-    public void setResource(Resource resource) { this.resource = resource; }
-
-    public ResourceRequest getRequest() { return request; }
-    public void setRequest(ResourceRequest request) { this.request = request; }
-
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
-
-    public LocalDateTime getAllocatedAt() { return allocatedAt; }
-    public void setAllocatedAt(LocalDateTime allocatedAt) { this.allocatedAt = allocatedAt; }
+    private String notes;
 }

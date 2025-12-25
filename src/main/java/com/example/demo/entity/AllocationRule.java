@@ -1,8 +1,14 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Table(name = "allocation_rules")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AllocationRule {
 
     @Id
@@ -10,21 +16,8 @@ public class AllocationRule {
     private Long id;
 
     private String ruleName;
-    private String ruleType; // e.g., FIRST_AVAILABLE, PRIORITY
-    private Integer priorityWeight;
 
-    public AllocationRule() {}
+    private String ruleType; // e.g., FIRST_AVAILABLE, ROUND_ROBIN
 
-    // Getters & Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getRuleName() { return ruleName; }
-    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
-
-    public String getRuleType() { return ruleType; }
-    public void setRuleType(String ruleType) { this.ruleType = ruleType; }
-
-    public Integer getPriorityWeight() { return priorityWeight; }
-    public void setPriorityWeight(Integer priorityWeight) { this.priorityWeight = priorityWeight; }
+    private Integer priorityWeight = 1;
 }
