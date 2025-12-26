@@ -5,7 +5,7 @@ import com.example.demo.repository.AllocationRuleRepository;
 import com.example.demo.service.AllocationRuleService; 
 import java.util.List; 
  
- 
+ @Service
 public class AllocationRuleServiceImpl implements AllocationRuleService { 
  
     private final AllocationRuleRepository ruleRepo; 
