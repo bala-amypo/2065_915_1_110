@@ -12,7 +12,7 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
 
 # Server Configuration
-server.port=8080
+server.port=8081
 
 # JWT Configuration
 jwt.secret=test-secret-key-that-is-long-enough-1234
